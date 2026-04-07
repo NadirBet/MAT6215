@@ -53,6 +53,17 @@ def stage_forced(args, stage: str) -> bool:
     return args.force or stage in set(args.force_stage or [])
 
 
+def stage_enabled(args, stage: str) -> bool:
+    if stage == "data":
+        return args.only in (None, "data")
+    order = ["train", "diag", "dyn", "summary"]
+    if args.only is None:
+        return True
+    if args.only not in order:
+        return False
+    return order.index(stage) <= order.index(args.only)
+
+
 def checkpoint_path(model_name: str) -> Path:
     return DATA_DIR / f"model_{model_name}.pkl"
 
@@ -133,9 +144,15 @@ def main() -> None:
             DatasetConfig(allow_generate=args.allow_generate)
         )
         tracker.mark("data_ready", train_shape=list(train_states.shape), test_shape=list(test_states.shape))
+        if args.only == "data":
+            write_json(SUMMARY_PATH, {"dataset_meta": dataset_meta})
+            tracker.finish(summary_path=str(SUMMARY_PATH))
+            return
 
         trained_models = {}
-        if stage_selected(args, "train") or any(not checkpoint_path(name).exists() for name in bundles):
+        train_requested = stage_enabled(args, "train") or stage_forced(args, "train")
+        any_missing_checkpoints = any(not checkpoint_path(name).exists() for name in bundles)
+        if train_requested:
             train_x, train_y = make_onestep_pairs(train_states)
             test_x, test_y = make_onestep_pairs(test_states)
             configs = {
@@ -193,6 +210,10 @@ def main() -> None:
                     best_epoch=artifact["best_epoch"],
                     best_test_loss=artifact["best_test_loss"],
                 )
+        elif any_missing_checkpoints:
+            raise FileNotFoundError(
+                "Training checkpoints are missing. Run with `--only train` or without `--only` first."
+            )
         else:
             for name, bundle in bundles.items():
                 artifact = load_checkpoint(checkpoint_path(name))
