@@ -45,6 +45,11 @@ paper_reproductions/**/__pycache__/
 # Large vendored reference code
 paper_reproductions/park2024_ks/stacNODE-master/
 
+# Small cached Linot dataset kept in Git for cross-machine project presets
+!paper_reproductions/linot2021_ks/data/
+!paper_reproductions/linot2021_ks/data/*.npy
+!paper_reproductions/linot2021_ks/data/*.json
+
 # OS files
 desktop.ini
 Thumbs.db

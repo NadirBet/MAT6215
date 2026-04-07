@@ -1,0 +1,9 @@
+{
+  "domain_length": 22.0,
+  "state_dim": 64,
+  "dt": 0.25,
+  "seed": 0,
+  "n_warmup": 2000,
+  "n_train": 20000,
+  "n_test": 8000
+}
