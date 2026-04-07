@@ -1,0 +1,48 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Local tooling
+.claude/
+.vscode/
+.idea/
+
+# External / recreated dependencies
+_external/
+
+# Large local datasets and generated artifacts
+data/
+figures/
+reports/
+articles/
+
+# Paper PDFs and other large binaries
+*.pdf
+*.png
+*.jpg
+*.jpeg
+*.gif
+
+# Logs and checkpoints
+*.log
+*.out
+*.err
+*.npy
+*.npz
+*.pkl
+*.ckpt
+
+# Generated outputs inside paper reproductions
+paper_reproductions/**/data/
+paper_reproductions/**/results/
+paper_reproductions/**/figures/
+paper_reproductions/**/final_figure2/
+paper_reproductions/**/__pycache__/
+
+# Large vendored reference code
+paper_reproductions/park2024_ks/stacNODE-master/
+
+# OS files
+desktop.ini
+Thumbs.db
